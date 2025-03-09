@@ -68,8 +68,23 @@ void dealloc(Node* head)
 // -----------------------------------------------
 
 
-
-
+struct RemoveOdd {
+    bool operator()(int value) {
+        return (value % 2) != 0;
+    }
+};
+Node* cloneList(Node* head) {
+    if (!head) return NULL;
+    Node* newHead = new Node(head->val, NULL);
+    Node* currentNew = newHead;
+    Node* currentOld = head->next;
+    while (currentOld) {
+        currentNew->next = new Node(currentOld->val, NULL);
+        currentNew = currentNew->next;
+        currentOld = currentOld->next;
+    }
+    return newHead;
+}
 
 int main(int argc, char* argv[])
 {
@@ -85,10 +100,33 @@ int main(int argc, char* argv[])
     cout << "Original list: ";
     print(head);
 
-    // Test out your linked list code
+    Node* smaller = NULL;
+    Node* larger = NULL;
+    
+    Node* listForPivot = cloneList(head);
 
+    llpivot(listForPivot, smaller, larger, 5);
+    
+    cout << "After llpivot with pivot 5:" << endl;
+    cout << "Smaller (<=5): ";
+    print(smaller);
+    cout << "Larger (>5): ";
+    print(larger);
 
-
+    dealloc(smaller);
+    dealloc(larger);
+    
+    Node* listForFilter = readList(argv[1]);
+    cout << "List before llfilter (remove odds): ";
+    print(listForFilter);
+    
+    Node* filtered = llfilter(listForFilter, RemoveOdd());
+    cout << "List after llfilter (only evens remain): ";
+    print(filtered);
+    
+    dealloc(filtered);
+    
+    dealloc(head);
     
     return 0;
 
